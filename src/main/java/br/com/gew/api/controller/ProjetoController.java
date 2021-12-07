@@ -64,6 +64,13 @@ public class ProjetoController {
         return ResponseEntity.ok(projetoContagemUtils.contar());
     }
 
+    @GetMapping("/count/{dias}")
+    public ResponseEntity<List<VerbaUtilizadaPorDiaOutputDTO>> calcularVerbaPorDia(
+            @PathVariable int dias
+    ) throws ExceptionTratement {
+        return ResponseEntity.ok(verbaUtils.countLastDays(dias));
+    }
+
     @GetMapping("/count/{dias}/{numeroDoProjeto}")
     public ResponseEntity<List<VerbaUtilizadaPorDiaOutputDTO>> calcularVerbaUtilizadaPorDia(
             @PathVariable int dias,

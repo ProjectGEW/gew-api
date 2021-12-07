@@ -8,11 +8,11 @@ CREATE TABLE secoes_pagantes(
     PRIMARY KEY(id)
 );
 
-DROP TRIGGER IF EXISTS `gew_v2`.`secoes_pagantes_BEFORE_INSERT`;
+DROP TRIGGER IF EXISTS `gew`.`secoes_pagantes_BEFORE_INSERT`;
 
 DELIMITER $$
 USE `gew`$$
-CREATE DEFINER = CURRENT_USER TRIGGER `gew_v2`.`secoes_pagantes_BEFORE_INSERT` BEFORE INSERT ON `secoes_pagantes` FOR EACH ROW
+CREATE DEFINER = CURRENT_USER TRIGGER `gew`.`secoes_pagantes_BEFORE_INSERT` BEFORE INSERT ON `secoes_pagantes` FOR EACH ROW
 BEGIN
 	SET @max := (SELECT MAX(id) FROM secoes_pagantes);
     SET @count := (SELECT COUNT(id) FROM secoes_pagantes);

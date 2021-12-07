@@ -94,7 +94,36 @@ public class VerbaUtils {
         return countBudgetResponses;
     }
 
+    public List<VerbaUtilizadaPorDiaOutputDTO> countLastDays(int days) {
+        LocalDate date = LocalDate.now();
+
+        List<VerbaUtilizadaPorDiaOutputDTO> countBudgetResponses = new ArrayList<>();
+
+        for (int i = 0; i < days; i++) {
+            VerbaUtilizadaPorDiaOutputDTO countBudgetResponse = new VerbaUtilizadaPorDiaOutputDTO();
+            double verba = 0;
+
+            verba += countVerbaUtilizadaPorDia(date);
+
+            countBudgetResponse.setVerbaUtilizada(verba);
+            countBudgetResponse.setData(date.getDayOfMonth() + "/" + date.getMonth().getValue());
+
+            date = date.minusDays(1);
+
+            countBudgetResponses.add(countBudgetResponse);
+        }
+
+        return countBudgetResponses;
+    }
+
+    private double countVerbaUtilizadaPorDia(LocalDate date) {
+        List<Alocado> alocados = alocadosService.listar();
+
+        return calculaTotalVerbaPorDia(alocados, date);
+    }
+
     private double countVerbaUtilizadaPorDiaPorProjeto(LocalDate date, long numeroDoProjeto) {
+
         long projeto_id = projetosService.buscarPorNumeroProjeto(numeroDoProjeto).get().getId();
 
         List<Alocado> alocados = alocadosService.listarPorProjeto(projeto_id);
