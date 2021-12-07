@@ -1,0 +1,9 @@
+CREATE TABLE fornecedores (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    nome VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(18) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    telefone VARCHAR(14) NOT NULL,
+
+    PRIMARY KEY(id)
+);
