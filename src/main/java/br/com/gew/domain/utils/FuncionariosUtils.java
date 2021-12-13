@@ -198,4 +198,8 @@ public class FuncionariosUtils {
         return ResponseEntity.ok().build();
     }
 
+    public Long buscarCargoPorEmail(String email){
+        Funcionario funcionario = funcionariosService.buscarPorEmail(email).get();
+        return cargosFuncionariosService.buscarPorFuncionario(funcionario.getNumero_cracha()).getCargo_id();
+    }
 }

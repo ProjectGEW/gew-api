@@ -73,6 +73,11 @@ public class FuncionarioController {
         return ResponseEntity.ok(funcionariosUtils.buscar(numeroCracha));
     }
 
+    @GetMapping("/cargo/{email}")
+    public Long buscarCargoPorEmail(@PathVariable String email) {
+        return funcionariosUtils.buscarCargoPorEmail(email);
+    }
+
     @PutMapping("/{numeroCracha}")
     public ResponseEntity<FuncionarioDataOutputDTO> editar(
             @RequestBody FuncionarioInputDTO funcionarioInputDTO,

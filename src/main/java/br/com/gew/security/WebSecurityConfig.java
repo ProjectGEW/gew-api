@@ -32,6 +32,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter  {
             "/",
             "/funcionarios",
             "/funcionarios/*",
+            "/funcionarios/*/*",
             "/consultores",
             "/consultores/*",
             "/projetos",
