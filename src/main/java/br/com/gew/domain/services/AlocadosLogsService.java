@@ -32,8 +32,4 @@ public class AlocadosLogsService {
         }
     }
 
-    public void remover() {
-
-    }
-
 }

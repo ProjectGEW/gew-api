@@ -6,15 +6,10 @@ import br.com.gew.api.model.output.DespesaOutputDTO;
 import br.com.gew.api.model.output.ProjetoOutputDTO;
 import br.com.gew.api.model.output.SecaoPaganteOutputDTO;
 import br.com.gew.api.model.output.ValoresTotaisOutputDTO;
-import br.com.gew.domain.entities.Despesa;
-import br.com.gew.domain.entities.Projeto;
-import br.com.gew.domain.entities.StatusProjeto;
+import br.com.gew.domain.entities.*;
 import br.com.gew.domain.exception.EntityNotFoundException;
 import br.com.gew.domain.exception.ExceptionTratement;
-import br.com.gew.domain.services.DespesasService;
-import br.com.gew.domain.services.FuncionariosService;
-import br.com.gew.domain.services.ProjetosService;
-import br.com.gew.domain.services.SecoesService;
+import br.com.gew.domain.services.*;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -34,6 +29,9 @@ public class ProjetosUtils {
     private ProjetosService projetosService;
     private FuncionariosService funcionariosService;
     private DespesasService despesasService;
+    private AlocadosService alocadosService;
+    private AlocadosLogsService alocadosLogsService;
+    private LogHorasService logHorasService;
 
     private DespesasUtils despesasUtils;
     private SecoesPagantesUtils secoesPagantesUtils;
@@ -148,10 +146,28 @@ public class ProjetosUtils {
         valoresTotaisDTO.setValorTotalDespesas(valorTotalDespesas);
         valoresTotaisDTO.setValorTotalEsforco(valorTotalEsforcos);
         valoresTotaisDTO.setValorTotalCcPagantes(valorTotalCC);
+        valoresTotaisDTO.setVerbaUtilizada(calculaVerbaUtilizada(projeto.getId()));
 
         projetoOutputDTO.setValoresTotais(valoresTotaisDTO);
 
         return projetoOutputDTO;
+    }
+
+    private double calculaVerbaUtilizada(long projetoId) {
+        double total = 0;
+        List<Alocado> alocados = alocadosService.listarPorProjeto(projetoId);
+
+        for (Alocado alocado : alocados) {
+            Funcionario funcionario = funcionariosService.buscar(alocado.getFuncionario_cracha()).get();
+            List<AlocadoLog> alocadoLogs = alocadosLogsService.listarPorAlocado(alocado.getId());
+
+            for (AlocadoLog alocadoLog : alocadoLogs) {
+                total += logHorasService.buscar(alocadoLog.getLog_id()).get().getHoras() *
+                        funcionario.getValor_hora();
+            }
+        }
+
+        return total;
     }
 
     public boolean verifyExceptionCadastro(

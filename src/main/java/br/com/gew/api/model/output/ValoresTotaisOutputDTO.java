@@ -16,7 +16,11 @@ import lombok.Setter;
 public class ValoresTotaisOutputDTO {
 
     private double valorTotalCcPagantes;
+
     private double valorTotalDespesas;
+
     private double valorTotalEsforco;
+
+    private double verbaUtilizada;
 
 }
