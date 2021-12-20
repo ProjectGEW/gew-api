@@ -202,4 +202,9 @@ public class FuncionariosUtils {
         Funcionario funcionario = funcionariosService.buscarPorEmail(email).get();
         return cargosFuncionariosService.buscarPorFuncionario(funcionario.getNumero_cracha()).getCargo_id();
     }
+
+    public Long buscarCrachaPorEmail(String email){
+        Funcionario funcionario = funcionariosService.buscarPorEmail(email).get();
+        return cargosFuncionariosService.buscarPorFuncionario(funcionario.getNumero_cracha()).getFuncionario_cracha();
+    }
 }

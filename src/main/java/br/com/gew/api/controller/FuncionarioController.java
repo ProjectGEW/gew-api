@@ -73,6 +73,15 @@ public class FuncionarioController {
         return ResponseEntity.ok(funcionariosUtils.buscar(numeroCracha));
     }
 
+    @GetMapping("/cracha/{email}")
+    public Long buscarFuncionarioPorEmail(@PathVariable String email) throws Exception{
+        if(funcionariosService.buscarPorEmail(email).isEmpty()){
+            return 0L;
+        }
+
+        return funcionariosUtils.buscarCrachaPorEmail(email);
+    }
+
     @GetMapping("/cargo/{email}")
     public Long buscarCargoPorEmail(@PathVariable String email) {
         return funcionariosUtils.buscarCargoPorEmail(email);
