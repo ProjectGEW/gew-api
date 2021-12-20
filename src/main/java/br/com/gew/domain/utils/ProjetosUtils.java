@@ -116,9 +116,6 @@ public class ProjetosUtils {
 
     private ProjetoOutputDTO montarProjeto(Projeto projeto) throws ExceptionTratement {
         ProjetoOutputDTO projetoOutputDTO = new ProjetoOutputDTO();
-        double valorTotalDespesas = 0;
-        double valorTotalEsforcos = 0;
-        double valorTotalCC = 0;
 
         projetoOutputDTO.setProjetoData(
                 projetoAssembler.toModel(projeto)
@@ -131,6 +128,16 @@ public class ProjetosUtils {
         projetoOutputDTO.setSecoesPagantes(
                 secoesPagantesUtils.listar(projeto.getId())
         );
+
+        projetoOutputDTO.setValoresTotais(calculaValores(projetoOutputDTO, projeto.getId()));
+
+        return projetoOutputDTO;
+    }
+
+    private ValoresTotaisOutputDTO calculaValores(ProjetoOutputDTO projetoOutputDTO, long projetoId) {
+        double valorTotalDespesas = 0;
+        double valorTotalEsforcos = 0;
+        double valorTotalCC = 0;
 
         ValoresTotaisOutputDTO valoresTotaisDTO = new ValoresTotaisOutputDTO();
 
@@ -146,11 +153,9 @@ public class ProjetosUtils {
         valoresTotaisDTO.setValorTotalDespesas(valorTotalDespesas);
         valoresTotaisDTO.setValorTotalEsforco(valorTotalEsforcos);
         valoresTotaisDTO.setValorTotalCcPagantes(valorTotalCC);
-        valoresTotaisDTO.setVerbaUtilizada(calculaVerbaUtilizada(projeto.getId()));
+        valoresTotaisDTO.setVerbaUtilizada(calculaVerbaUtilizada(projetoId));
 
-        projetoOutputDTO.setValoresTotais(valoresTotaisDTO);
-
-        return projetoOutputDTO;
+        return valoresTotaisDTO;
     }
 
     private double calculaVerbaUtilizada(long projetoId) {
@@ -351,6 +356,28 @@ public class ProjetosUtils {
 
         long projetoId = projetosService.buscarPorNumeroProjeto(numeroDoProjeto).get().getId();
         int horas_totais = horas.getHoras() + projetosService.buscar(projetoId).get().getHoras_apontadas();
+        int horas_aprovadas = calculaHorasAprovadas(projetoId);
+
+        if (horas.getHoras() + projetosService.buscar(projetoId).get().getHoras_apontadas() > horas_aprovadas) {
+            throw new ExceptionTratement("Horas apontadas excedem as horas totais aprovadas");
+        }
+
+        Projeto projeto = projetosService.buscar(projetoId).get();
+
+        projeto.setStatusProjeto(StatusProjeto.EM_ANDAMENTO);
+        projeto.setHoras_apontadas(
+                projetosService.buscar(projetoId).get().getHoras_apontadas() + horas.getHoras());
+
+        if (horas_totais == horas_aprovadas) {
+            projeto.setDataDaConclusao(LocalDate.now());
+            projeto.setStatusProjeto(StatusProjeto.CONCLUIDO);
+        }
+
+        logHorasUtils.apontar(horas, projetoId, numero_cracha);
+        projetosService.editar(projeto, numeroDoProjeto);
+    }
+
+    private int calculaHorasAprovadas(long projetoId) {
         int horas_aprovadas = 0;
 
         List<Despesa> despesasDoProjeto = despesasService.listarPorProjeto(projetoId);
@@ -359,32 +386,7 @@ public class ProjetosUtils {
             horas_aprovadas += despesas.getEsforco();
         }
 
-        if (horas.getHoras() + projetosService.buscar(projetoId).get().getHoras_apontadas() > horas_aprovadas) {
-            throw new ExceptionTratement("Horas apontadas excedem as horas totais aprovadas");
-        }
-
-        if (horas_totais == horas_aprovadas) {
-            Projeto projeto = projetosService.buscar(projetoId).get();
-
-            projeto.setDataDaConclusao(LocalDate.now());
-            projeto.setHoras_apontadas(
-                    projetosService.buscar(projetoId).get().getHoras_apontadas() + horas.getHoras()
-            );
-            projeto.setStatusProjeto(StatusProjeto.CONCLUIDO);
-
-            projetosService.editar(projeto, numeroDoProjeto);
-
-            logHorasUtils.apontar(horas, projetoId, numero_cracha);
-            return;
-        }
-
-        Projeto projeto = projetosService.buscar(projetoId).get();
-
-        projeto.setHoras_apontadas(projetosService.buscar(projetoId).get().getHoras_apontadas() + horas.getHoras());
-        projeto.setStatusProjeto(StatusProjeto.EM_ANDAMENTO);
-
-        logHorasUtils.apontar(horas, projetoId, numero_cracha);
-        projetosService.editar(projeto, numeroDoProjeto);
+        return horas_aprovadas;
     }
 
 }
