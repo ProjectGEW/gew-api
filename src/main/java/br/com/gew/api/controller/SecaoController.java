@@ -39,7 +39,7 @@ public class SecaoController {
     }
 
     @GetMapping("/nome/{secao_nome}")
-    public ResponseEntity<SecaoOutputDTO> buscar(@PathVariable String secao_nome) {
+    public ResponseEntity<SecaoOutputDTO> buscarPorNome(@PathVariable String secao_nome) {
         if (secoesService.buscarPorNome(secao_nome).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
