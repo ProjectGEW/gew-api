@@ -38,6 +38,15 @@ public class SecaoController {
         return ResponseEntity.ok(secaoAssembler.toModel(secoesService.buscar(id).get()));
     }
 
+    @GetMapping("/nome/{secao_nome}")
+    public ResponseEntity<SecaoOutputDTO> buscar(@PathVariable String secao_nome) {
+        if (secoesService.buscarPorNome(secao_nome).isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(secaoAssembler.toModel(secoesService.buscarPorNome(secao_nome).get()));
+    }
+
     @GetMapping("/cracha/{funcionario_cracha}")
     public ResponseEntity<SecaoOutputDTO> buscarPorFuncionario(@PathVariable long funcionario_cracha) {
         if (secoesService.buscarPorFuncionario(funcionario_cracha).isEmpty()) {

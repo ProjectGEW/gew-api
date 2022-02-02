@@ -31,7 +31,7 @@ public class SecoesPagantesUtils {
         for (SecaoPaganteInputDTO secaoPaganteInputDTO : secaoPaganteInputDTOS) {
             SecaoPagante secaoPagante = secaoPaganteAssembler.toEntity(secaoPaganteInputDTO);
 
-            secaoPagante.setSecao(secoesService.buscar(secaoPaganteInputDTO.getSecao_id()).get());
+            secaoPagante.setSecao(secoesService.buscarPorNome(secaoPaganteInputDTO.getSecao_nome()).get());
             secaoPagante.setPercentual(calcularPercentual(secaoPagante.getValor(), total));
             secaoPagante.setProjeto(projetosService.buscarPorNumeroProjeto(numeroDoProjeto).get());
 
@@ -63,7 +63,7 @@ public class SecoesPagantesUtils {
             secaoPagantes.get(i).setProjeto(projetosService.buscarPorNumeroProjeto(numeroDoProjeto).get());
             secaoPagantes.get(i).setPercentual(calcularPercentual(secaoPagantes.get(i).getValor(), total));
             secaoPagantes.get(i).setSecao(
-                    secoesService.buscar(secaoPaganteInputDTOS.get(i).getSecao_id()).get()
+                    secoesService.buscarPorNome(secaoPaganteInputDTOS.get(i).getSecao_nome()).get()
             );
 
             secoesPagantesService.editar(secaoPagantes.get(i), secaoPagantesDB.get(i).getId());
@@ -76,7 +76,7 @@ public class SecoesPagantesUtils {
                         calcularPercentual(secaoPagantes.get(i).getValor(), total)
                 );
                 secaoPagantes.get(i).setSecao(
-                        secoesService.buscar(secaoPaganteInputDTOS.get(i).getSecao_id()).get()
+                        secoesService.buscarPorNome(secaoPaganteInputDTOS.get(i).getSecao_nome()).get()
                 );
 
                 secoesPagantesService.cadastrar(secaoPagantes.get(i));

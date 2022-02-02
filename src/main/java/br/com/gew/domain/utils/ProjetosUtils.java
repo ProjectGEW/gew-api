@@ -188,9 +188,9 @@ public class ProjetosUtils {
                 projetoInputDTO.getProjetoData().getData_de_termino());
 
         int somaDespesas = verifyDespesas(projetoInputDTO.getDespesas());
-        int somaCcPagantes = verifyCcPagantes(projetoInputDTO.getSecoesPagantes());
+        int somaSecoesPagantes = verifySecoesPagantes(projetoInputDTO.getSecoesPagantes());
 
-        verifyValores(somaDespesas, somaCcPagantes);
+        verifyValores(somaDespesas, somaSecoesPagantes);
 
         return true;
     }
@@ -214,9 +214,9 @@ public class ProjetosUtils {
                 projetoInputDTO.getProjetoData().getData_de_termino());
 
         int somaDespesas = verifyDespesas(projetoInputDTO.getDespesas());
-        int somaCcPagantes = verifyCcPagantes(projetoInputDTO.getSecoesPagantes());
+        int somaSecoesPagantes = verifySecoesPagantes(projetoInputDTO.getSecoesPagantes());
 
-        verifyValores(somaDespesas, somaCcPagantes);
+        verifyValores(somaDespesas, somaSecoesPagantes);
 
         return true;
     }
@@ -292,12 +292,12 @@ public class ProjetosUtils {
         int somaDespesas = 0;
         String[] despesas = new String[despesasInputDTOS.size()];
 
-        if (despesasInputDTOS.size() > 1) {
-            for (int i = 0; i < despesasInputDTOS.size(); i ++) {
-                despesas[i] = despesasInputDTOS.get(i).getNome();
-                somaDespesas += despesasInputDTOS.get(i).getValor().intValue();
-            }
+        for (int i = 0; i < despesasInputDTOS.size(); i ++) {
+            despesas[i] = despesasInputDTOS.get(i).getNome();
+            somaDespesas += despesasInputDTOS.get(i).getValor().intValue();
+        }
 
+        if (despesasInputDTOS.size() > 1) {
             for (int i = 1; i < despesasInputDTOS.size(); i ++) {
                 for (int j = 1; j < i + 1; j ++) {
                     if (despesas[i].equals(despesas[j - 1])) {
@@ -310,19 +310,19 @@ public class ProjetosUtils {
         return somaDespesas;
     }
 
-    private int verifyCcPagantes(
+    private int verifySecoesPagantes(
             List<SecaoPaganteInputDTO> secaoPaganteInputDTOS
     ) throws ExceptionTratement {
         int somaCcPagantes = 0;
 
-        long[] ccPagantes = new long[secaoPaganteInputDTOS.size()];
+        String[] ccPagantes = new String[secaoPaganteInputDTOS.size()];
+
+        for (int i = 0; i < secaoPaganteInputDTOS.size(); i ++) {
+            ccPagantes[i] = secaoPaganteInputDTOS.get(i).getSecao_nome();
+            somaCcPagantes += secaoPaganteInputDTOS.get(i).getValor().intValue();
+        }
 
         if (secaoPaganteInputDTOS.size() > 1) {
-            for (int i = 0; i < secaoPaganteInputDTOS.size(); i ++) {
-                ccPagantes[i] = secaoPaganteInputDTOS.get(i).getSecao_id();
-                somaCcPagantes += secaoPaganteInputDTOS.get(i).getValor().intValue();
-            }
-
             for (int i = 1; i < secaoPaganteInputDTOS.size(); i ++) {
                 for (int j = 1; j < i; j ++) {
                     if (ccPagantes[i] == ccPagantes[j - 1]) {

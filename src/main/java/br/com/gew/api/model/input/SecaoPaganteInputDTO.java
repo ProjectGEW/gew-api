@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public class SecaoPaganteInputDTO {
 
     @NotNull
-    private long secao_id;
+    private String secao_nome;
 
     @NotNull
     private BigDecimal valor;
